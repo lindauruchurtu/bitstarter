@@ -2,8 +2,11 @@ var express = require('express');
 var app = express();
 app.use(express.logger());
 
+var fs = require('fs');
+
 app.get('/', function(request, response) {
-    response.send(fs.readFileSync("index.html").toString('utf-8'));
+    var buffer = fs.readFileSync("index.html");
+    response.send(buffer.toString('utf-8'));
 // response.send('Hello World 2!');
 });
 
