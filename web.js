@@ -3,7 +3,7 @@ var app = express();
 app.use(express.logger());
 
 app.get('/', function(request, response) {
-    response.send(buf.toString(fs.readFile(index.html),'utf8'));
+    response.send(fs.readFileSync("index.html").toString('utf-8'));
 // response.send('Hello World 2!');
 });
 
