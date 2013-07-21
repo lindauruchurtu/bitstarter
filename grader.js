@@ -1,9 +1,11 @@
+#!/usr/bin/env node
+
 var fs = require('fs');
 var program = require('commander');
 var cheerio = require('cheerio');
 var HTMLFILE_DEFAULT = "index.html";
 var CHECKSFILE_DEFAULT = "checks.json";
-var CHECKSURL_DEFAULT = "http://polar-woodland-2149.herokuapp.com/";
+// var CHECKSURL_DEFAULT = "http://polar-woodland-2149.herokuapp.com/";
 var rest = require('restler');
 
 // var callback = function(cont) { 
@@ -24,10 +26,10 @@ var assertFileExists = function(infile) {
 // This function checks if URL is provided
 var assertURLExists = function(url) {
   var url_string = url.toString();
-  rest.get(url_string).on('complete', function(outcome) {
-    if (result instanceof Error) {
-      console.log('Error: ' + outcome.message);
-    }
+  rest.get(url_string).on('complete', function(result) {
+  if (result instanceof Error) {
+      console.log('%s is not a valid URL', url_string);
+  }
   });
   return url_string;
 }
@@ -73,16 +75,17 @@ if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-        .option('-u, --url <myUrl>','Path to external url', clone(assertURLExists), CHECKSURL_DEFAULT)
+        .option('-u, --url <myUrl>','Path to external url', clone(assertURLExists))
         .parse(process.argv);
 
         if (program.url) {
-//            rest.get(program.url).on('complete',callback);
-            rest.get(program.url).on('complete',function(result)){
+// Need to think exactly where to call for the contents of the URL
+       //     rest.get(program.url).on('complete',function(result) {
                 var checkJson = checkURL(program.url,program.checks);
+		// console.log("hello");
                 var outJson = JSON.stringify(checkJson, null, 4);
                 console.log(outJson);
-            };
+         //   });
         }
         else if (program.file) {
             var checkJson = checkHtmlFile(program.file,program.checks);
